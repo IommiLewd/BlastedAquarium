@@ -20,9 +20,9 @@ class MainWindow extends Phaser.State {
         this.background = this.add.image(0, 0, 'backgroundImage');
     }
     _addFish() {
-        this.fish = new Fish(this.game, 200, 200);
-        //        this.fish = new Fish(this.game, 200, 200);
-        //        this.fish = new Fish(this.game, 200, 200);
+        this.fish = new Fish(this.game, 200, 200, 0);
+        this.fish = new Fish(this.game, 200, 200, 0);
+        this.fish = new Fish(this.game, 200, 200, 1);
 
     }
     _fishBirthing(locationX, locationY) {
@@ -38,15 +38,15 @@ class MainWindow extends Phaser.State {
         this._initStage();
         this._addFish();
         this.testSignal = this.fish.events.fishBirth.add(this._fishBirthing, this, 0, this.locationX, this.locationY);
-        
+
         //this.testSignal = this.fish.events.fishBirth.add(this._fishBirthing, this, 0, this.locationX, this.locationY);
     }
 
 
     update() {
         if (this.game.input.activePointer.leftButton.isDown) {
-            this.fish.capturedX = 30;
-            this.fish.capturedY = 30;
+            this.fish.capturedX = this.game.input.mousePointer.x;
+            this.fish.capturedY = this.game.input.mousePointer.y;
             this.fish._moveTo();
 
         }

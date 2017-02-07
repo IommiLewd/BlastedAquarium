@@ -6,6 +6,8 @@ class Preload extends Phaser.State {
         this.load.image('backgroundImage', 'img/alphaBackground.png');
         this.load.image('anchor', 'img/anchorPoint.png');
         this.load.image('fish', 'img/fish/guppy.png');
+        this.load.image('femaleFish', 'img/fish/guppyFemale.png');
+        
         this.load.image('infoBox', 'img/userInterface/infoBox.png');
         this.load.image('hungerBar', 'img/userInterface/bar.png');
         this.game.load.spritesheet('tiledColor', 'img/userInterface/tileColors.png', 2, 2, 3);

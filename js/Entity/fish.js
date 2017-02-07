@@ -19,9 +19,7 @@ class Fish extends Phaser.Sprite {
             this.sex = Math.floor(this.sex);
             console.log(this.sex);
         }
-        this.model = this.game.add.sprite(0, 0, 'fish');
-        this.addChild(this.model);
-        this.model.anchor.setTo(0.5);
+
         //Insert custom variables for scaling here
         this.events.fishBirth = new Phaser.Signal();
         this.fishAge = 0;
@@ -29,12 +27,21 @@ class Fish extends Phaser.Sprite {
         this._initInfoBox();
         this._randomMovement();
         this._ageCounter();
-        this.size = 1;
+        this._initModel();
+        this.size = 0.3;
     }
 
 
 
-
+    _initModel() {
+        if(this.sex === 0) {
+        this.model = this.game.add.sprite(0, 0, 'femaleFish');
+        } else {
+              this.model = this.game.add.sprite(0, 0, 'fish');
+        }
+        this.addChild(this.model);
+        this.model.anchor.setTo(0.5);
+    }
     _assignName() {
         this.femaleNames = ['Paisley', 'Hazel', 'Lucy', 'Mackenzie', 'Gianna', 'Victoria', 'Elena', 'Grace', 'Sarah', 'Addison', 'Nora', 'Hailey', 'Ella', 'Kaylee', 'Abigail', 'Chloe', 'Aubrey', 'Emily', 'Amelia', 'Lily', 'Zoe', 'Aria', 'Isabella', 'Olivia', 'Emma', 'Sophia', 'Priscilla', 'Rosa', 'Luna', 'Aura'];
         this.maleNames = ['Bryson', 'Daffyd', 'Dave', 'Tommy', 'Haddock', 'Bjorn', 'Doug', 'Morgan', 'Lucas', 'Liam', 'Elijah', 'Logan', 'Caleb', 'Ryan', 'Luke', 'Connor', 'Isaac', 'Brayden', 'Samuel', 'Joseph', 'Hunter', 'Mateo', 'Max', 'Adrian', 'Cooper', 'Hudson', 'Asher', 'Ezra', 'Chase', 'Harrison', 'Felix'];
@@ -48,7 +55,7 @@ class Fish extends Phaser.Sprite {
     }
 
     _ageCounter() {
-        this.game.time.events.add(Phaser.Timer.SECOND * 6, function () {
+        this.game.time.events.add(Phaser.Timer.SECOND * 2, function () {
             this.fishAge++;
             if (this.hunger >= 2) {
                 this.hunger -= 2;
@@ -59,7 +66,12 @@ class Fish extends Phaser.Sprite {
             console.log(this.chosenName + ' Has grown, it is now = ' + this.fishAge + ' Units. Its Hunger is = ' + this.hunger);
             this._fishFood();
             this._ageCounter();
-
+            if (this.sex === 1 && this.size < 0.75) {
+                this.size += 0.030;
+            } else if (this.sex === 0 && this.size < 0.9) {
+                this.size += 0.035;
+            }
+            console.log(this.size);
 
         }, this);
     }
@@ -164,16 +176,16 @@ class Fish extends Phaser.Sprite {
     }
 
     _moveTo() {
-        //this.game.physics.arcade.moveToXY(this, this.capturedX, this.capturedY, 12, undefined);
+        this.game.physics.arcade.moveToXY(this, this.capturedX, this.capturedY, 90, undefined);
         console.log('Move To Fired!');
     }
 
     _movementUpdate() {
         if (this.body.velocity.x > 0) {
-            this.model.scale.setTo(-1, 1);
+            this.model.scale.setTo(-this.size, this.size);
 
         } else {
-            this.model.scale.setTo(1, 1);
+            this.model.scale.setTo(this.size, this.size);
         }
         if (this.x < 110) {
             this.body.velocity.x = 15;
