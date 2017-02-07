@@ -8,8 +8,14 @@ class Preload extends Phaser.State {
         this.load.image('fish', 'img/fish/guppy.png');
         this.load.image('infoBox', 'img/userInterface/infoBox.png');
         this.load.image('hungerBar', 'img/userInterface/bar.png');
-        this.load.image('hungerPixel', 'img/userInterface/yellowpx.png');
-        this.load.image('A1', 'img/A1.png');
+        this.game.load.spritesheet('tiledColor', 'img/userInterface/tileColors.png', 2, 2, 3);
+        
+        //Fish Status Icons
+        this.load.image('maleIcon', 'img/userInterface/maleIcon.png');
+        this.load.image('femaleIcon', 'img/userInterface/femaleIcon.png');
+        this.load.image('deathIcon', 'img/userInterface/deathIcon.png');
+        this.load.image('pregnantIcon', 'img/userInterface/pregnantIcon.png');
+        
 
     }
     create() {
