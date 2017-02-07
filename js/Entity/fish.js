@@ -40,6 +40,7 @@ class Fish extends Phaser.Sprite {
         } else if (this.sex === 1) {
             this.chosenName = this.maleNames[Math.floor(Math.random() * this.maleNames.length)];
         }
+      
         console.log(this.chosenName);
     }
 
@@ -55,6 +56,7 @@ class Fish extends Phaser.Sprite {
             console.log(this.chosenName + ' Has grown, it is now = ' + this.fishAge + ' Units. Its Hunger is = ' + this.hunger);
             this._fishFood();
             this._ageCounter();
+              this.events.fishBirth.dispatch(this.x, this.y, this); 
         }, this);
     }
 

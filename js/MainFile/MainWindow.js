@@ -23,13 +23,17 @@ class MainWindow extends Phaser.State {
     }
     _addFish(){
         this.fish = new Fish(this.game, 200, 200);
-        this.fish = new Fish(this.game, 200, 200);
-        this.fish = new Fish(this.game, 200, 200);
+//        this.fish = new Fish(this.game, 200, 200);
+//        this.fish = new Fish(this.game, 200, 200);
+        
     }
-
+_fishBirthing() {
+    console.log('fishies giving birth');
+}
     create() {
         this._initStage();
         this._addFish();
+        this.fish.events.fishBirth.add(this._fishBirthing, this);
     }
 
 
