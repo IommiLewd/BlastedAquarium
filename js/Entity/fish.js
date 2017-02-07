@@ -45,7 +45,7 @@ class Fish extends Phaser.Sprite {
     }
 
     _ageCounter() {
-        this.game.time.events.add(Phaser.Timer.SECOND * 60, function () {
+        this.game.time.events.add(Phaser.Timer.SECOND * 6, function () {
             this.fishAge++;
             if (this.hunger >= 2) {
                 this.hunger -= 2;
@@ -56,7 +56,9 @@ class Fish extends Phaser.Sprite {
             console.log(this.chosenName + ' Has grown, it is now = ' + this.fishAge + ' Units. Its Hunger is = ' + this.hunger);
             this._fishFood();
             this._ageCounter();
-              this.events.fishBirth.dispatch(this.x, this.y, this); 
+            this.locationX = 30;
+            this.locationY = 30;
+              this.events.fishBirth.dispatch(this, this.locationX, this.locationY); 
         }, this);
     }
 

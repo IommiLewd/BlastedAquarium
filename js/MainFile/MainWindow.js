@@ -28,12 +28,14 @@ class MainWindow extends Phaser.State {
         
     }
 _fishBirthing() {
-    console.log('fishies giving birth');
+    //console.log(this.testMod);
+    console.log('Fishies Giving birth');
 }
     create() {
+        this._aquariumQuality = 73;
         this._initStage();
         this._addFish();
-        this.fish.events.fishBirth.add(this._fishBirthing, this);
+       this.testMod = this.fish.events.fishBirth.add(this._fishBirthing, this);
     }
 
 
