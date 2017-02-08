@@ -3,6 +3,7 @@ class Fish extends Phaser.Sprite {
         super(game, posx, posy, 'anchor', sex);
         game.add.existing(this);
         game.physics.arcade.enable(this);
+        this.body.allowGravity = false;
         this.body.collideWorldBounds = true;
         this.anchor.setTo(0.5);
         this.inputEnabled = true;
@@ -10,14 +11,13 @@ class Fish extends Phaser.Sprite {
         this.capturedY = 0;
         this.hunger = 100;
         this.isHungry = false;
-        this.sex = sex;
+        this.sex = sex;   // 0 is female, 1 is male.
         //this.locationX = this.body.x;
         //this.locationY = this.body.y;
         //fishGivingBirth    this.events.fishBirth.dispatch(this.locationX, this.locationY); 
         if (this.sex === undefined) {
             this.sex = Math.random() * (2 - 0) + 0;
             this.sex = Math.floor(this.sex);
-            console.log(this.sex);
         }
 
         //Insert custom variables for scaling here
@@ -28,7 +28,8 @@ class Fish extends Phaser.Sprite {
         this._randomMovement();
         this._ageCounter();
         this._initModel();
-        this.size = 0.3;
+        this.size = 0.25;
+        this.pregnant = false;
     }
 
 
@@ -63,7 +64,7 @@ class Fish extends Phaser.Sprite {
             this.fishGameAge = this.fishAge / 10;
             this.fishGameAge = Math.floor(this.fishGameAge);
             this.ageTextNumber.setText(this.fishGameAge);
-            console.log(this.chosenName + ' Has grown, it is now = ' + this.fishAge + ' Units. Its Hunger is = ' + this.hunger);
+            console.log(this.chosenName + ' Has grown, it is now = ' + this.fishAge + ' Units. Its Hunger is = ' + this.hunger + ' Captured X is: ' + this.capturedX);
             this._fishFood();
             this._ageCounter();
             if (this.sex === 1 && this.size < 0.75) {
@@ -71,7 +72,6 @@ class Fish extends Phaser.Sprite {
             } else if (this.sex === 0 && this.size < 0.9) {
                 this.size += 0.035;
             }
-            console.log(this.size);
 
         }, this);
     }
@@ -120,6 +120,8 @@ class Fish extends Phaser.Sprite {
         this.hungerText = this.game.add.text(-26, -46, "Hunger:", this.defaultStyle);
         this.hungerBar = this.game.add.sprite(22, -51, 'hungerBar');
         this.hungerPixel = this.game.add.tileSprite(26, -49, 30, 2, 'tiledColor');
+        this.pregnantIcon = this.game.add.image(88, -82, 'pregnantIcon');
+        this.deathIcon = this.game.add.image(88, -50, 'deathIcon');
 
         if (this.sex === 1) {
             this.sexIcon = this.game.add.image(88, -114, 'maleIcon');
@@ -131,13 +133,14 @@ class Fish extends Phaser.Sprite {
         this.hungerPixel.animations.add('yellow', [1], 1, true);
         this.hungerPixel.animations.add('red', [2], 1, true);
 
-
         this.nameText.anchor.setTo(0.5);
         this.typeText.anchor.setTo(0.5);
         this.ageText.anchor.setTo(0.5);
         this.ageTextNumber.anchor.setTo(0.5);
         this.hungerText.anchor.setTo(0.5);
         this.sexIcon.anchor.setTo(0.5);
+        this.pregnantIcon.anchor.setTo(0.5);
+        this.deathIcon.anchor.setTo(0.5);
 
         this.addChild(this.nameText);
         this.addChild(this.typeText);
@@ -147,6 +150,8 @@ class Fish extends Phaser.Sprite {
         this.addChild(this.hungerBar);
         this.addChild(this.hungerPixel);
         this.addChild(this.sexIcon);
+        this.addChild(this.pregnantIcon);
+        this.addChild(this.deathIcon);
     }
 
     _timerFunction() {
@@ -196,7 +201,7 @@ class Fish extends Phaser.Sprite {
         if (this.y < 120) {
             this.body.velocity.y = 5;
         }
-        if (this.y > 420) {
+        if (this.y > 480) {
             this.body.velocity.y = -5;
         }
     }
@@ -213,6 +218,12 @@ class Fish extends Phaser.Sprite {
             this.hungerBar.visible = true;
             this.hungerPixel.visible = true;
             this.sexIcon.visible = true;
+            if(this.pregnant) {this.pregnantIcon.visible = true;}
+     
+            if(this.fishAge > 170){this.deathIcon.visible = true;}
+          
+            
+            
         } else {
             this.infoBox.visible = false;
             this.typeText.visible = false;
@@ -223,6 +234,8 @@ class Fish extends Phaser.Sprite {
             this.hungerBar.visible = false;
             this.hungerPixel.visible = false;
             this.sexIcon.visible = false;
+            this.pregnantIcon.visible = false;
+            this.deathIcon.visible = false;
 
         }
     }
