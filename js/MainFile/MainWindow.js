@@ -92,7 +92,17 @@ class MainWindow extends Phaser.State {
     _spawnMeal() {
         if (this.game.time.now > this.foodSpawnTimer) {
             this.foodSpawnTimer = this.game.time.now + this.foodCounter;
+            for (this.i = 0; this.i < 10; this.i++) {
+                var foodRange = Math.random() * (50 + this.game.input.mousePointer.x - this.game.input.mousePointer.x + 50) + this.game.input.mousePointer.x + 50;
+                var foodY = Math.random() * (-50 - 15) - 15;
+                this.foodChip = this.game.add.sprite(foodRange, foodY, 'foodChip');
+                this.game.physics.arcade.enable(this.foodChip);
+                this.foodChip.collideWorldBounds = true;
+                this.foodGroup.add(this.foodChip);
 
+
+            }
+            this._foodHandler();
         }
     }
     _spawnFood() {
@@ -139,7 +149,8 @@ class MainWindow extends Phaser.State {
     update() {
         if (this.game.input.activePointer.rightButton.isDown) {
             console.log('chow!');
-            this._spawnFood();
+            //this._spawnFood();
+            this._spawnMeal();
         }
         this._collisionHandler();
     }
