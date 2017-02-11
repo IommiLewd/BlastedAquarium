@@ -13,12 +13,12 @@ class goldFish extends Phaser.Sprite {
             this.sex = Math.random() * (2 - 0) + 0;
             this.sex = Math.floor(this.sex);
         }
-
+      this.modelSize = 1;
         this.hunger = 10;
         this.foodPosition = [];
         this.foodPresent = false;
         this.capturedX = 100;
-        this.capturedY = 460;
+        this.capturedY = 480;
         this.hasEaten = false;
         this._assignName();
         this._initModel();
@@ -55,7 +55,6 @@ class goldFish extends Phaser.Sprite {
         this.bubbleTween = this.game.add.tween(this.bubble).to({
             alpha: 0
         }, 2000, "Linear", true);
-        //this.bubbleTween.onComplete.add(this._bubbleDestroy, this);
         this.bubbleTween.onComplete.add(function () {
             this.bubble.kill();
         }, this);
@@ -69,7 +68,8 @@ class goldFish extends Phaser.Sprite {
         }
         this.addChild(this.model);
         this.model.anchor.setTo(0.5);
-        this.modelSize = 1;
+  
+        //this.model.scale.setTo(0.3, 0.3);
     }
 
 
@@ -153,13 +153,13 @@ class goldFish extends Phaser.Sprite {
     }
 
 
-    _movementTimer() {
+    _movementTimer() { 
         this.seededTimer = Math.random() * (8 - 1) + 1;
         this.chanceOfFeeding = Math.random() * (99 - 0) + 0;
         this.game.time.events.add(Phaser.Timer.SECOND * this.seededTimer, function () {
-            if (this.chanceOfFeeding > this.hunger &&  this.hasEaten === false && this.foodPosition > 0) {
+            if (this.chanceOfFeeding > this.hunger &&  this.hasEaten === false && this.foodPosition.length > 0) {
                 this._moveTo();
-                console.log('feasting!');
+                console.log('feasting! Chance Of Feeding is: ' + this.chanceOfFeeding + ' Hunger Is: ' + this.hunger);
             } else {
                 this._randomMovement();
                 console.log('moving');
@@ -225,7 +225,7 @@ class goldFish extends Phaser.Sprite {
     update() {
         this._pointerOver();
         this._movementUpdate();
-       console.log(this.foodPresent);
+      // console.log(this.foodPosition);
     }
 }
 
