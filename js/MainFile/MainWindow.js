@@ -55,6 +55,15 @@ class MainWindow extends Phaser.State {
         this.bubbleEmitter.y = 260;
     }
 
+
+    _foodHandler() {
+        this.foodPosition =[];
+        this.foodGroup.forEachAlive(function (foodChip) {
+            this.foodPosition.push(foodChip.x, foodChip.y );
+            console.log(this.foodPosition);
+        }, this, true);
+
+    }
     _spawnFood() {
         if (this.game.time.now > this.foodSpawnTimer) {
             this.foodSpawnTimer = this.game.time.now + this.foodCounter;
@@ -95,6 +104,10 @@ class MainWindow extends Phaser.State {
 
 
     update() {
+
+
+
+
         //        if (this.game.input.activePointer.leftButton.isDown) {
         //            this.fishGroup.forEach(function (fish, capturedX, capturedY) {
         //                fish.capturedX = this.game.input.mousePointer.x;
@@ -108,6 +121,7 @@ class MainWindow extends Phaser.State {
             console.log('chow!');
             this._spawnFood();
         }
+        this._foodHandler();
         this._collisionHandler();
     }
 }

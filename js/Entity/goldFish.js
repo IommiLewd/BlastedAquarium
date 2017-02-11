@@ -13,9 +13,11 @@ class goldFish extends Phaser.Sprite {
             this.sex = Math.random() * (2 - 0) + 0;
             this.sex = Math.floor(this.sex);
         }
-
-        this.capturedX = 0;
-        this.capturedY = 0;
+        
+        this.hunger = 50;
+        
+        this.capturedX = 100;
+        this.capturedY = 100;
 
         this._assignName();
         this._initModel();
@@ -36,6 +38,7 @@ class goldFish extends Phaser.Sprite {
     }
     _moveTo() {
         this.game.physics.arcade.moveToXY(this, this.capturedX, this.capturedY, 90, undefined);
+         this._movementTimer();
     }
     _spawnBubble() {
         var randomNumber = Math.floor(Math.random() * 16) - 15;
@@ -133,13 +136,13 @@ class goldFish extends Phaser.Sprite {
         } else {
             this.model.scale.setTo(this.modelSize, this.modelSize);
         }
-        if (this.x < 156) {
+        if (this.x < 160) {
             this.body.velocity.x = 15;
         }
         if (this.x > 804) {
             this.body.velocity.x = -15;
         }
-        if (this.y < 155) {
+        if (this.y < 164) {
             this.body.velocity.y = 5;
         }
         if (this.y > 480) {
@@ -150,7 +153,17 @@ class goldFish extends Phaser.Sprite {
 
     _movementTimer() {
         this.seededTimer = Math.random() * (8 - 1) + 1;
-        this.game.time.events.add(Phaser.Timer.SECOND * this.seededTimer, this._randomMovement, this);
+        this.chanceOfFeeding = Math.random() * (99 - 0) + 0;
+        this.game.time.events.add(Phaser.Timer.SECOND * this.seededTimer, function() {
+            if(this.chanceOfFeeding > this.hunger){
+                this._moveTo();
+                console.log('feasting!');
+            } else {
+                  this._randomMovement();
+                console.log('moving');
+            }
+       
+        }, this);
         this._spawnBubble();
     }
 
@@ -212,6 +225,60 @@ class goldFish extends Phaser.Sprite {
         this._movementUpdate();
     }
 }
+
+
+
+
+
+/*
+backup of movement timer
+
+  _movementTimer() {
+        this.seededTimer = Math.random() * (8 - 1) + 1;
+        this.chanceOfFeeding = Math.random() * (99 - 0) + 0;
+        this.game.time.events.add(Phaser.Timer.SECOND * this.seededTimer, function() {
+            if(this.chanceOfFeeding > this.hunger){
+                console.log('feasting!');
+            } else {
+                  this._randomMovement();
+                console.log('moving');
+            }
+       
+        }, this);
+        this._spawnBubble();
+    }
+
+
+
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
