@@ -16,11 +16,6 @@ class MainWindow extends Phaser.State {
 
     _collisionHandler() {
         this.game.physics.arcade.collide(this.barrier, this.foodGroup);
-        //this.game.physics.arcade.collide(this.fishGroup, this.foodGroup);
-
-        //                   this.physics.arcade.overlap(this.foodGroup, this.fishGroup,  function (fish, foodChip) {
-        //             console.log('Nomnom');
-        //            },null,  this);
         this.game.physics.arcade.overlap(this.fishGroup, this.foodGroup, this._fishEatEvent, null, this);
     }
     _initStage() {
@@ -31,17 +26,14 @@ class MainWindow extends Phaser.State {
         if (fish.hasEaten === false) {
             foodChip.kill();
             fish.hunger += 10;
-            console.log('nomnom!');
             fish.hasEaten = true;
             this.game.time.events.add(Phaser.Timer.SECOND * 12, function () {
                 fish.hasEaten = false;
             }, this);
         } else {
-            console.log('No food today slut');
         }
 
         this._foodHandler();
-        console.log(this.foodPosition);
     }
     _addFish(x, y, type) {
         this.fish = new goldFish(this.game, x, y, type);
@@ -105,19 +97,7 @@ class MainWindow extends Phaser.State {
             this._foodHandler();
         }
     }
-    _spawnFood() {
-        if (this.game.time.now > this.foodSpawnTimer) {
-            this.foodSpawnTimer = this.game.time.now + this.foodCounter;
-            this.foodChip = this.game.add.sprite(this.game.input.mousePointer.x, -15, 'foodChip');
-            this.game.physics.arcade.enable(this.foodChip);
-            this.foodChip.collideWorldBounds = true;
-            this.foodGroup.add(this.foodChip);
-            this._foodHandler();
 
-        }
-
-
-    }
     _initBarrier() {
         this.barrier = this.game.add.tileSprite(0, 500, 960, 40, 'yellowpx');
         this.game.physics.arcade.enable(this.barrier);
@@ -140,16 +120,22 @@ class MainWindow extends Phaser.State {
         this._addFish(200, 200, 1);
         this._addFish(200, 200, 1);
         this._addFish(200, 200, 0);
-        this._addFish(200, 200, 0);
+//        this._addFish(200, 200, 0);
+//        this._addFish(200, 200);
+//        this._addFish(200, 200);
+//        this._addFish(200, 200);
+//        this._addFish(200, 200);
+//        this._addFish(200, 200);
+//        this._addFish(200, 200);
+//        this._addFish(200, 200);
+//        this._addFish(200, 200);
         this.foodPosition = [];
 
     }
 
 
     update() {
-        if (this.game.input.activePointer.rightButton.isDown) {
-            console.log('chow!');
-            //this._spawnFood();
+        if (this.game.input.activePointer.rightButton.isDown && this.game.input.mousePointer.x < 700 && this.game.input.mousePointer.x > 260) {
             this._spawnMeal();
         }
         this._collisionHandler();

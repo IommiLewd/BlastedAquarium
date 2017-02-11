@@ -13,7 +13,7 @@ class goldFish extends Phaser.Sprite {
             this.sex = Math.random() * (2 - 0) + 0;
             this.sex = Math.floor(this.sex);
         }
-      this.modelSize = 1;
+      this.modelSize = 0.5;
         this.hunger = 10;
         this.foodPosition = [];
         this.foodPresent = false;
@@ -22,9 +22,14 @@ class goldFish extends Phaser.Sprite {
         this.hasEaten = false;
         this._assignName();
         this._initModel();
+         this._initInfoBox();
+        
         this._randomMovement();
-        this._initInfoBox();
-
+        
+        this._lifeTimer();
+        this.gameMinute = 60;
+        this.lifeSpan = 0;
+       
     }
 
     _assignName() {
@@ -37,6 +42,54 @@ class goldFish extends Phaser.Sprite {
         }
         console.log(this.chosenName);
     }
+    
+    _lifeTimer (){
+        this.lifeSpan++;
+        this._scaleModel();
+        console.log(this.chosenName + ' has grown a timeUnit. Current Lifespan is: ' + this.lifeSpan + ' ModelSize is: ' + this.modelSize);
+        this.game.time.events.add(Phaser.Timer.SECOND * 1, this._lifeTimer, this);
+    }
+    
+    _lifeCycle(){
+        
+    }
+    
+    _scaleBounds() {
+        
+    }
+    
+    _scaleModel() {
+        if(this.modelSize <= 1.0){
+            this.modelSize += 0.012;
+        }
+    }
+    
+    _pregnancy() {
+        
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     _moveTo() {
         var rand = this.foodPosition[Math.floor(Math.random() * this.foodPosition.length)];
         this.game.physics.arcade.moveToXY(this, rand, this.capturedY, 90, undefined);
@@ -44,7 +97,7 @@ class goldFish extends Phaser.Sprite {
     }
     _spawnBubble() {
         var randomNumber = Math.floor(Math.random() * 16) - 15;
-        this.randomSize = Math.random() * (0.4 - 0.2) + 0.3;
+        this.randomSize = Math.random() * (0.3 - 0.1) + 0.3;
         this.bubble = this.game.add.sprite(randomNumber, 0, 'bubble');
         this.bubble.anchor.setTo(0.5);
         this.addChild(this.bubble);
@@ -54,7 +107,7 @@ class goldFish extends Phaser.Sprite {
         this.bubble.body.velocity.y = -40;
         this.bubbleTween = this.game.add.tween(this.bubble).to({
             alpha: 0
-        }, 2000, "Linear", true);
+        }, 1000, "Linear", true);
         this.bubbleTween.onComplete.add(function () {
             this.bubble.kill();
         }, this);
@@ -68,8 +121,6 @@ class goldFish extends Phaser.Sprite {
         }
         this.addChild(this.model);
         this.model.anchor.setTo(0.5);
-  
-        //this.model.scale.setTo(0.3, 0.3);
     }
 
 
@@ -159,10 +210,8 @@ class goldFish extends Phaser.Sprite {
         this.game.time.events.add(Phaser.Timer.SECOND * this.seededTimer, function () {
             if (this.chanceOfFeeding > this.hunger &&  this.hasEaten === false && this.foodPosition.length > 0) {
                 this._moveTo();
-                console.log('feasting! Chance Of Feeding is: ' + this.chanceOfFeeding + ' Hunger Is: ' + this.hunger);
             } else {
                 this._randomMovement();
-                console.log('moving');
             }
 
         }, this);
@@ -225,7 +274,6 @@ class goldFish extends Phaser.Sprite {
     update() {
         this._pointerOver();
         this._movementUpdate();
-      // console.log(this.foodPosition);
     }
 }
 
