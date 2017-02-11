@@ -13,12 +13,13 @@ class goldFish extends Phaser.Sprite {
             this.sex = Math.random() * (2 - 0) + 0;
             this.sex = Math.floor(this.sex);
         }
-        
-        this.hunger = 50;
-        
-        this.capturedX = 100;
-        this.capturedY = 100;
 
+        this.hunger = 10;
+        this.foodPosition = [];
+        this.foodPresent = false;
+        this.capturedX = 100;
+        this.capturedY = 460;
+        this.hasEaten = false;
         this._assignName();
         this._initModel();
         this._randomMovement();
@@ -37,8 +38,9 @@ class goldFish extends Phaser.Sprite {
         console.log(this.chosenName);
     }
     _moveTo() {
-        this.game.physics.arcade.moveToXY(this, this.capturedX, this.capturedY, 90, undefined);
-         this._movementTimer();
+        var rand = this.foodPosition[Math.floor(Math.random() * this.foodPosition.length)];
+        this.game.physics.arcade.moveToXY(this, rand, this.capturedY, 90, undefined);
+        this._movementTimer();
     }
     _spawnBubble() {
         var randomNumber = Math.floor(Math.random() * 16) - 15;
@@ -154,15 +156,15 @@ class goldFish extends Phaser.Sprite {
     _movementTimer() {
         this.seededTimer = Math.random() * (8 - 1) + 1;
         this.chanceOfFeeding = Math.random() * (99 - 0) + 0;
-        this.game.time.events.add(Phaser.Timer.SECOND * this.seededTimer, function() {
-            if(this.chanceOfFeeding > this.hunger){
+        this.game.time.events.add(Phaser.Timer.SECOND * this.seededTimer, function () {
+            if (this.chanceOfFeeding > this.hunger &&  this.hasEaten === false && this.foodPosition > 0) {
                 this._moveTo();
                 console.log('feasting!');
             } else {
-                  this._randomMovement();
+                this._randomMovement();
                 console.log('moving');
             }
-       
+
         }, this);
         this._spawnBubble();
     }
@@ -223,6 +225,7 @@ class goldFish extends Phaser.Sprite {
     update() {
         this._pointerOver();
         this._movementUpdate();
+       console.log(this.foodPresent);
     }
 }
 
@@ -253,27 +256,6 @@ backup of movement timer
 
 
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
