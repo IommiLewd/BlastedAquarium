@@ -27,28 +27,45 @@ class MainWindow extends Phaser.State {
             foodChip.kill();
             fish.hunger += 10;
             fish.hasEaten = true;
-            this.game.time.events.add(Phaser.Timer.SECOND * 12, function () {
+            this.game.time.events.add(Phaser.Timer.SECOND * 7, function () {
                 fish.hasEaten = false;
             }, this);
-        } else {
-        }
-
+        } else {}
+        fish._updateFishInfo();
         this._foodHandler();
     }
     _addFish(x, y, type) {
-        this.fish = new goldFish(this.game, x, y, type);
+        this.spawnX = x;
+        this.spawnY = y;
+        this.verticalSpawn = Math.random() * (850 - 140) + 140;
+        this.horizontalSpawn = Math.random() * (440 - 150) + 150;
+        if (this.spawnX === undefined) {
+            this.spawnX = this.verticalSpawn;
+        }
+
+        if (this.spawnY === undefined) {
+            this.spawnY = this.horizontalSpawn;
+        }
+        this.fish = new goldFish(this.game, this.spawnX, this.spawnY, type);
         this.fishGroup.add(this.fish);
+
 
     }
     _fishBirthing(locationX, locationY) {
-        //        this.locationX = locationX;
-        //        this.locationY = locationY;
-        //        console.log('LocationX is = ' + this.locationX);
-        //        console.log('LocationY is = ' + this.locationY);
+        //                this.locationX = locationX;
+        //                this.locationY = locationY;
+        //                console.log('LocationX is = ' + this.locationX);
+        //                console.log('LocationY is = ' + this.locationY);
+        var randomPregnancyRate = Math.random() * (3 - 1) + 1;
+        randomPregnancyRate = Math.floor(randomPregnancyRate);
         console.log('Fishies Giving birth');
-        this._addFish(locationX, locationY, undefined);
-        this._addFish(locationX, locationY, undefined);
+      for (this.i = 0; this.i < randomPregnancyRate; this.i++) { 
+            this._addFish(locationX, locationY, 0);
+}
+        //this._addFish(locationX, locationY, 0);
+        //this._addFish(locationX, locationY, undefined);
         //this.fish = new Fish(this.game, this.locationX, this.locationY);
+        this.testSignal = this.fish.events.fishBirth.add(this._fishBirthing, this, 0, this.locationX, this.locationY);
     }
 
     _initBubbles() {
@@ -91,8 +108,6 @@ class MainWindow extends Phaser.State {
                 this.game.physics.arcade.enable(this.foodChip);
                 this.foodChip.collideWorldBounds = true;
                 this.foodGroup.add(this.foodChip);
-
-
             }
             this._foodHandler();
         }
@@ -117,20 +132,14 @@ class MainWindow extends Phaser.State {
         this._initBubbles();
         this.fishGroup = this.add.group();
         this.foodGroup = this.add.group();
-        this._addFish(200, 200, 1);
-        this._addFish(200, 200, 1);
-        this._addFish(200, 200, 0);
-//        this._addFish(200, 200, 0);
-//        this._addFish(200, 200);
-//        this._addFish(200, 200);
-//        this._addFish(200, 200);
-//        this._addFish(200, 200);
-//        this._addFish(200, 200);
-//        this._addFish(200, 200);
-//        this._addFish(200, 200);
-//        this._addFish(200, 200);
+        this._addFish(undefined, undefined, 1);
+        this._addFish(undefined, undefined);
+        this._addFish(undefined, undefined, 0);
+        this.stage.disableVisibilityChange = true;
+
         this.foodPosition = [];
 
+        this.testSignal = this.fish.events.fishBirth.add(this._fishBirthing, this, 0, this.locationX, this.locationY);
     }
 
 
@@ -139,5 +148,6 @@ class MainWindow extends Phaser.State {
             this._spawnMeal();
         }
         this._collisionHandler();
+
     }
 }

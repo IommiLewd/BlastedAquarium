@@ -13,8 +13,9 @@ class goldFish extends Phaser.Sprite {
             this.sex = Math.random() * (2 - 0) + 0;
             this.sex = Math.floor(this.sex);
         }
-      this.modelSize = 0.5;
-        this.hunger = 10;
+        this.anchor.setTo(0.5);
+        this.modelSize = 0.3;
+        this.hunger = 35;
         this.foodPosition = [];
         this.foodPresent = false;
         this.capturedX = 100;
@@ -22,14 +23,17 @@ class goldFish extends Phaser.Sprite {
         this.hasEaten = false;
         this._assignName();
         this._initModel();
-         this._initInfoBox();
-        
+        this._initInfoBox();
+
         this._randomMovement();
-        
-        this._lifeTimer();
+
+
         this.gameMinute = 60;
         this.lifeSpan = 0;
-       
+        this.pregnant = false;
+        this.endOfPregnancy = 0;
+        this.events.fishBirth = new Phaser.Signal();
+        this._lifeTimer();
     }
 
     _assignName() {
@@ -42,54 +46,98 @@ class goldFish extends Phaser.Sprite {
         }
         console.log(this.chosenName);
     }
-    
-    _lifeTimer (){
+
+    _lifeTimer() {
         this.lifeSpan++;
+        this.hunger -= 2;
         this._scaleModel();
-        console.log(this.chosenName + ' has grown a timeUnit. Current Lifespan is: ' + this.lifeSpan + ' ModelSize is: ' + this.modelSize);
-        this.game.time.events.add(Phaser.Timer.SECOND * 1, this._lifeTimer, this);
+        this._lifeCycle();
+        this._updateFishInfo();
+        console.log(this.chosenName + ' has grown a timeUnit. Current Lifespan is: ' + this.lifeSpan + ' pregnant is = ' + this.pregnant);
+        this.lifeCounter = this.game.time.events.add(Phaser.Timer.SECOND * 2, this._lifeTimer, this);
     }
-    
-    _lifeCycle(){
-        
+
+    _lifeCycle() {
+        this.pregnancyChance = Math.random() * (15 - 1) + 1;
+        this.pregnancyChance = Math.floor(this.pregnancyChance);
+        if (this.lifeSpan > 50 && this.lifeSpan < 150 && this.pregnant === false && this.lifespan + this.endOfPregnancy < this.lifeSpan && this.pregnancyChance === 5 && this.sex === 0 && this.hunger < 70) {
+            this._pregnancy();
+            console.log(this.chosenName + 'Pregnancy Fired! <-------------------------- ');
+        }
+
+        if (this.lifeSpan > this.birthDate && this.pregnant === true) {
+            this._birth();
+            console.log(this.chosenName + 's Birth Fired!');
+            this.pregnant = false;
+        }
+
+        if (this.lifeSpan === this.endOfPregnancy) {
+            console.log(this.chosenName + 'EndOvPregnancy');
+        }
+
+
+
+        var deathChance = Math.random() * (99 - 1) + 1;
+        if (this.lifeSpan - 200 > deathChance) {
+            this.game.time.events.remove(this.lifeCounter);
+            this.kill();
+
+        }
+        //if(this.)
+
+
+
     }
-    
-    _scaleBounds() {
-        
-    }
-    
+
     _scaleModel() {
-        if(this.modelSize <= 1.0){
-            this.modelSize += 0.012;
+        if (this.modelSize <= 1.0) {
+            this.modelSize += 0.017;
         }
     }
-    
-    _pregnancy() {
-        
+    _birth() {
+        this.locationX = this.body.x;
+        this.locationY = this.body.y;
+        console.log('Birthday!');
+        this.events.fishBirth.dispatch(this.locationX, this.locationY);
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    _pregnancy() {
+
+        this.pregnant = true;
+        this.birthDate = this.lifeSpan + 30;
+        this.endOfPregnancy = this.lifeSpan + 40;
+
+    }
+
+    _updateFishInfo() {
+        this.fishMonths = this.lifeSpan / 10;
+        this.fishMonths = Math.floor(this.fishMonths);
+        this.ageTextNumber.setText(this.fishMonths);
+
+
+
+
+        this.hungerPixel.width = this.hunger / 100 * 30;
+        if (this.hunger < 30) {
+            this.hungerPixel.animations.play('red');
+            this.isHungry = true;
+        } else if (this.hunger > 70) {
+            this.hungerPixel.animations.play('green');
+            this.isHungry = false;
+        } else {
+            this.hungerPixel.animations.play('yellow');
+            this.isHungry = true;
+        }
+        if (this.hunger > 100) {
+            this.hunger = 100;
+        }
+    }
+
+
+
+
+
+
+
     _moveTo() {
         var rand = this.foodPosition[Math.floor(Math.random() * this.foodPosition.length)];
         this.game.physics.arcade.moveToXY(this, rand, this.capturedY, 90, undefined);
@@ -189,10 +237,10 @@ class goldFish extends Phaser.Sprite {
         } else {
             this.model.scale.setTo(this.modelSize, this.modelSize);
         }
-        if (this.x < 160) {
+        if (this.x < 118 + this.model.width / 2) {
             this.body.velocity.x = 15;
         }
-        if (this.x > 804) {
+        if (this.x > 848 + this.model.width / 2) {
             this.body.velocity.x = -15;
         }
         if (this.y < 164) {
@@ -204,18 +252,24 @@ class goldFish extends Phaser.Sprite {
     }
 
 
-    _movementTimer() { 
+    _movementTimer() {
         this.seededTimer = Math.random() * (8 - 1) + 1;
         this.chanceOfFeeding = Math.random() * (99 - 0) + 0;
         this.game.time.events.add(Phaser.Timer.SECOND * this.seededTimer, function () {
-            if (this.chanceOfFeeding > this.hunger &&  this.hasEaten === false && this.foodPosition.length > 0) {
+            if (this.chanceOfFeeding > this.hunger && this.hasEaten === false && this.foodPosition.length > 0) {
+                console.log('food!');
                 this._moveTo();
             } else {
                 this._randomMovement();
+                console.log('randommovement!');
             }
 
         }, this);
-        this._spawnBubble();
+        var bubbleChance = Math.random() * (5 - 1) + 1;
+        bubbleChance = Math.floor(bubbleChance);
+        if (bubbleChance === 4) {
+            this._spawnBubble();
+        }
     }
 
     _randomMovement() {
@@ -253,7 +307,7 @@ class goldFish extends Phaser.Sprite {
             if (this.pregnant) {
                 this.pregnantIcon.visible = true;
             }
-            if (this.fishAge > 280) {
+            if (this.lifeSpan > 150) {
                 this.deathIcon.visible = true;
             }
         } else {
