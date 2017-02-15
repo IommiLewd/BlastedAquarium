@@ -2,11 +2,12 @@ class Preload extends Phaser.State {
     preload() {
 
         this.load.script('MainWindow', 'js/MainFile/MainWindow.js');
-        this.load.script('Fish', 'js/Entity/fish.js');
         this.load.script('goldFish', 'js/Entity/goldFish.js');
+        this.load.script('Guppy', 'js/Entity/Guppy.js');
+        this.load.image('maleGuppy', 'img/fish/maleGuppy.png');
+        this.load.image('femaleGuppy', 'img/fish/femaleGuppy.png');
         //this.load.image('backgroundImage', 'img/alphaBackground.png');
         this.load.image('backgroundImage', 'img/Background.png');
-        
         this.load.image('anchor', 'img/anchorPoint.png');
         
         this.load.image('goldFish1', 'img/fish/goldFish1.png');

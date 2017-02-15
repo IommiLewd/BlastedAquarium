@@ -1,5 +1,5 @@
 /**
- * base class for a simple game level.
+ * base class for a simple fish.
  *
  * @constructor  {}
  * @method   :
@@ -42,29 +42,26 @@ class MainWindow extends Phaser.State {
         if (this.spawnX === undefined) {
             this.spawnX = this.verticalSpawn;
         }
-
         if (this.spawnY === undefined) {
             this.spawnY = this.horizontalSpawn;
         }
-        this.fish = new goldFish(this.game, this.spawnX, this.spawnY, type);
+        this.fish = new Guppy(this.game, this.spawnX, this.spawnY, type);
         this.fishGroup.add(this.fish);
 
 
     }
+    
+    _checkForMales() {
+            this.fishGroup.forEachAlive(function (fish) {
+            fish.foodPosition = this.foodPosition;
+        }, this);
+    }
     _fishBirthing(locationX, locationY) {
-        //                this.locationX = locationX;
-        //                this.locationY = locationY;
-        //                console.log('LocationX is = ' + this.locationX);
-        //                console.log('LocationY is = ' + this.locationY);
         var randomPregnancyRate = Math.random() * (3 - 1) + 1;
         randomPregnancyRate = Math.floor(randomPregnancyRate);
-        console.log('Fishies Giving birth');
-      for (this.i = 0; this.i < randomPregnancyRate; this.i++) { 
-            this._addFish(locationX, locationY, 0);
-}
-        //this._addFish(locationX, locationY, 0);
-        //this._addFish(locationX, locationY, undefined);
-        //this.fish = new Fish(this.game, this.locationX, this.locationY);
+        for (this.i = 0; this.i < randomPregnancyRate; this.i++) {
+            this._addFish(locationX, locationY);
+        }
         this.testSignal = this.fish.events.fishBirth.add(this._fishBirthing, this, 0, this.locationX, this.locationY);
     }
 
@@ -102,7 +99,7 @@ class MainWindow extends Phaser.State {
         if (this.game.time.now > this.foodSpawnTimer) {
             this.foodSpawnTimer = this.game.time.now + this.foodCounter;
             for (this.i = 0; this.i < 10; this.i++) {
-                var foodRange = Math.random() * (50 + this.game.input.mousePointer.x - this.game.input.mousePointer.x + 50) + this.game.input.mousePointer.x + 50;
+                var foodRange = Math.random() * (60 + this.game.input.mousePointer.x - this.game.input.mousePointer.x - 10) + this.game.input.mousePointer.x - 10;
                 var foodY = Math.random() * (-50 - 15) - 15;
                 this.foodChip = this.game.add.sprite(foodRange, foodY, 'foodChip');
                 this.game.physics.arcade.enable(this.foodChip);
@@ -133,7 +130,7 @@ class MainWindow extends Phaser.State {
         this.fishGroup = this.add.group();
         this.foodGroup = this.add.group();
         this._addFish(undefined, undefined, 1);
-        this._addFish(undefined, undefined);
+        this._addFish(undefined, undefined, 0);
         this._addFish(undefined, undefined, 0);
         this.stage.disableVisibilityChange = true;
 

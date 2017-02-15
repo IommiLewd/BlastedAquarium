@@ -1,4 +1,4 @@
-class goldFish extends Phaser.Sprite {
+class Guppy extends Phaser.Sprite {
     constructor(game, posx, posy, sex) {
         super(game, posx, posy, 'anchor', sex);
         game.add.existing(this);
@@ -33,7 +33,7 @@ class goldFish extends Phaser.Sprite {
         this.endOfPregnancy = 0;
         this.events.fishBirth = new Phaser.Signal();
         this._lifeTimer();
-        this.typeOfFish = 1; // 1 is goldfish, 2 is neonFish, 3 is guppy.
+        this.typeOfFish = 3; // 1 is goldfish, 2 is neonFish, 3 is guppy.
         this.goldFishMalesPresent = 1;
         this.neonFishMalesPresent = 1;
         this.guppyMalesPresent = 1;
@@ -73,7 +73,7 @@ class goldFish extends Phaser.Sprite {
     _lifeCycle() {
         this.pregnancyChance = Math.random() * (15 - 1) + 1;
         this.pregnancyChance = Math.floor(this.pregnancyChance);
-        if (this.lifeSpan > 50 && this.lifeSpan < 150 && this.pregnant === false && this.lifespan + this.endOfPregnancy < this.lifeSpan && this.pregnancyChance === 5 && this.sex === 0 && this.hunger < 70) {
+        if (this.lifeSpan > 30 && this.lifeSpan < 130 && this.pregnant === false && this.lifespan + this.endOfPregnancy < this.lifeSpan && this.pregnancyChance === 5 && this.sex === 0 && this.hunger < 70) {
             this._pregnancy();
             console.log(this.chosenName + 'Pregnancy Fired! <-------------------------- ');
         }
@@ -89,7 +89,7 @@ class goldFish extends Phaser.Sprite {
         }
 
         var deathChance = Math.random() * (99 - 1) + 1;
-        if (this.lifeSpan - 200 > deathChance || this.hunger <= 0) {
+        if (this.lifeSpan - 170 > deathChance || this.hunger <= 0) {
           //  this.game.time.events.remove(this.lifeCounter);
             console.log('deathevent fired');
            //this.game.time.events.remove(this.lifeCounter);
@@ -103,7 +103,7 @@ class goldFish extends Phaser.Sprite {
 
     _scaleModel() {
         if (this.modelSize <= 1.0) {
-            this.modelSize += 0.017;
+            this.modelSize += 0.022;
         }
     }
     _birth() {
@@ -115,8 +115,8 @@ class goldFish extends Phaser.Sprite {
     _pregnancy() {
 
         this.pregnant = true;
-        this.birthDate = this.lifeSpan + 30;
-        this.endOfPregnancy = this.lifeSpan + 40;
+        this.birthDate = this.lifeSpan + 10;
+        this.endOfPregnancy = this.lifeSpan + 20;
 
     }
 
@@ -164,9 +164,9 @@ class goldFish extends Phaser.Sprite {
 
     _initModel() {
         if (this.sex === 0) {
-            this.model = this.game.add.sprite(0, 0, 'goldFish1');
+            this.model = this.game.add.sprite(0, 0, 'maleGuppy');
         } else {
-            this.model = this.game.add.sprite(0, 0, 'goldFish2');
+            this.model = this.game.add.sprite(0, 0, 'femaleGuppy');
         }
         this.addChild(this.model);
         this.model.anchor.setTo(0.5);
@@ -194,7 +194,7 @@ class goldFish extends Phaser.Sprite {
             fill: "#d4ae53"
         };
         this.nameText = this.game.add.text(-6, -109, this.chosenName, this.defaultStyle);
-        this.typeText = this.game.add.text(-6, -86, "Goldfish", this.goldStyle);
+        this.typeText = this.game.add.text(-6, -86, "Guppy", this.goldStyle);
         this.ageText = this.game.add.text(-33, -64, "Months", this.defaultStyle);
         this.ageTextNumber = this.game.add.text(46, -64, "0", this.ageStyle);
         this.hungerText = this.game.add.text(-26, -46, "Hunger:", this.defaultStyle);
