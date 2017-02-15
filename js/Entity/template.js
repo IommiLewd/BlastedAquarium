@@ -1,4 +1,4 @@
-class statusEffect extends Phaser.Sprite {
+class userInterface extends Phaser.Sprite {
     constructor(game, posx, posy, effectType) {
         super(game, posx, posy, 'anchor', effectType;
         game.add.existing(this);

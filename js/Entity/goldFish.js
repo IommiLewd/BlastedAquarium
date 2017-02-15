@@ -62,12 +62,6 @@ class goldFish extends Phaser.Sprite {
         if(this.lifeSpan < 350){
          this.lifeCounter = this.game.time.events.add(Phaser.Timer.SECOND * this.gameMinute, this._lifeTimer, this);   
         }
-        
-        //this.lifeCounter = this.game.time.events.add(Phaser.Timer.SECOND * this.gameMinute, this._lifeTimer, this);
-        
-        
-        
-        
     }
 
     _lifeCycle() {
@@ -94,11 +88,9 @@ class goldFish extends Phaser.Sprite {
             console.log('deathevent fired');
            //this.game.time.events.remove(this.lifeCounter);
             //this.lifeCounter.stop(false);
-         
             this.kill();
 
         }
-
     }
 
     _scaleModel() {

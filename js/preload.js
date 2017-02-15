@@ -28,6 +28,9 @@ class Preload extends Phaser.State {
         this.load.image('femaleIcon', 'img/userInterface/femaleIcon.png');
         this.load.image('deathIcon', 'img/userInterface/deathIcon.png');
         this.load.image('pregnantIcon', 'img/userInterface/pregnantIcon.png');
+        this.load.image('sellDown', 'img/userInterface/sellDown.png');
+        this.load.image('sellOver', 'img/userInterface/sellOver.png');
+        this.load.image('sellUp', 'img/userInterface/sellUp.png');
 
 
     }

@@ -58,7 +58,7 @@ class Guppy extends Phaser.Sprite {
         this._scaleModel();
         this._lifeCycle();
         this._updateFishInfo();
-        console.log(this.chosenName + ' has grown a timeUnit. Current Lifespan is: ' + this.lifeSpan + ' pregnant is = ' + this.pregnant);
+        console.log(this.chosenName + ' + 1. Lifespan is: ' + this.lifeSpan + '. pregnant is = ' + this.pregnant + '. FishInTank is: ' + this.fishInTank);
         if(this.lifeSpan < 350){
          this.lifeCounter = this.game.time.events.add(Phaser.Timer.SECOND * this.gameMinute, this._lifeTimer, this);   
         }

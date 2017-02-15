@@ -18,20 +18,22 @@ class MainWindow extends Phaser.State {
         this.game.physics.arcade.collide(this.barrier, this.foodGroup);
         this.game.physics.arcade.overlap(this.fishGroup, this.foodGroup, this._fishEatEvent, null, this);
     }
+
     _initStage() {
         this.background = this.add.image(0, 0, 'backgroundImage');
     }
 
-    
-    _autoFeed(){
-         this._spawnMeal(1);
-             console.log('autoFeed fird, groupLength is: ' + this.fishGroup.length);
-         this.game.time.events.add(Phaser.Timer.SECOND * 60, this._autoFeed, this);
+    _autoFeed() {
+        this._spawnMeal(1);
+        
+        this.game.time.events.add(Phaser.Timer.SECOND * 60, this._autoFeed, this);
+        this._checkCapacity();
     }
+
     _fishEatEvent(fish, foodChip) {
         if (fish.hasEaten === false) {
             foodChip.kill();
-            fish.hunger += 40;
+            fish.hunger += 15;
             fish.hasEaten = true;
             this.game.time.events.add(Phaser.Timer.SECOND * 7, function () {
                 fish.hasEaten = false;
@@ -39,8 +41,9 @@ class MainWindow extends Phaser.State {
         }
         fish._updateFishInfo();
         this._foodHandler();
-        this._checkCapacity();
+
     }
+
     _addFish(x, y, type) {
         this.spawnX = x;
         this.spawnY = y;
@@ -55,17 +58,9 @@ class MainWindow extends Phaser.State {
         this.fish = new Guppy(this.game, this.spawnX, this.spawnY, type);
         this.fishGroup.add(this.fish);
         this.testSignal = this.fish.events.fishBirth.add(this._fishBirthing, this, 0, this.locationX, this.locationY);
-
-    }
-    _checkMaxFish() {
-        this.fishGroup.forEachAlive(function (fish) {
-            fish.foodPosition = this.foodPosition;
-        }, this);
     }
 
     _checkforMales() {
-
-   
         this.fishGroup.forEachAlive(function (fish) {
             var males = [];
             if (fish.sex === 1) {
@@ -79,13 +74,10 @@ class MainWindow extends Phaser.State {
         }, this);
     }
 
-
-
-
     _checkCapacity() {
+        console.log('Capacity Check fired, groupLength is: ' + this.fishGroup.length);
         this._capacity = this.fishGroup.length;
         this.fishGroup.forEachAlive(function (fish) {
-            fish.fishInTank = 0;
             fish.fishInTank = this._capacity;
         }, this);
     }
@@ -120,7 +112,6 @@ class MainWindow extends Phaser.State {
         this.bubbleEmitter.y = 260;
     }
 
-
     _foodHandler() {
         this.foodPosition = [];
         this.foodGroup.forEachAlive(function (foodChip) {
@@ -129,19 +120,17 @@ class MainWindow extends Phaser.State {
         this.fishGroup.forEachAlive(function (fish) {
             fish.foodPosition = this.foodPosition;
         }, this);
-
     }
+
     _spawnMeal(type) {
         if (this.game.time.now > this.foodSpawnTimer) {
             this.foodSpawnTimer = this.game.time.now + this.foodCounter;
-
-            for (this.i = 0; this.i < 10; this.i++) {
-                if(type === 0){
-                     var foodRange = Math.random() * (60 + this.game.input.mousePointer.x - this.game.input.mousePointer.x - 10) + this.game.input.mousePointer.x - 10;
-                } else if (type === 1){
+            for (this.i = 0; this.i < this.fishGroup.length; this.i++) {
+                if (type === 0) {
+                    var foodRange = Math.random() * (60 + this.game.input.mousePointer.x - this.game.input.mousePointer.x - 10) + this.game.input.mousePointer.x - 10;
+                } else if (type === 1) {
                     var foodRange = Math.random() * (120 + 500 - 540 - 0) + 540 - 0;
                 }
-               
                 var foodY = Math.random() * (-50 - 15) - 15;
                 this.foodChip = this.game.add.sprite(foodRange, foodY, 'foodChip');
                 this.game.physics.arcade.enable(this.foodChip);
@@ -159,6 +148,7 @@ class MainWindow extends Phaser.State {
         this.barrier.body.immovable = true;
         this.barrier.allowGravity = 0;
     }
+
     create() {
         this.game.canvas.oncontextmenu = function (e) {
             e.preventDefault();
@@ -175,7 +165,6 @@ class MainWindow extends Phaser.State {
         this._addFish(undefined, undefined, 0);
         this._addFish(undefined, undefined, 0);
         this.stage.disableVisibilityChange = true;
-
         this.foodPosition = [];
         this._autoFeed();
         this.testSignal = this.fish.events.fishBirth.add(this._fishBirthing, this, 0, this.locationX, this.locationY);
@@ -187,6 +176,5 @@ class MainWindow extends Phaser.State {
             this._spawnMeal(0);
         }
         this._collisionHandler();
-
     }
 }
