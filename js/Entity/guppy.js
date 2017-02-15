@@ -26,7 +26,7 @@ class Guppy extends Phaser.Sprite {
         this._initInfoBox();
 
         this._randomMovement();
-        this.gameMinute = 20;
+        this.gameMinute = 5;
         
         this.lifeSpan = 0;
         this.pregnant = false;
@@ -38,6 +38,7 @@ class Guppy extends Phaser.Sprite {
         this.neonFishMalesPresent = 1;
         this.guppyMalesPresent = 1;
          this.fishNotDead = true;
+        this.fishInTank = [];
     }
 
     _assignName() {
@@ -71,9 +72,9 @@ class Guppy extends Phaser.Sprite {
     }
 
     _lifeCycle() {
-        this.pregnancyChance = Math.random() * (15 - 1) + 1;
+        this.pregnancyChance = Math.random() * (7 - 1) + 1;
         this.pregnancyChance = Math.floor(this.pregnancyChance);
-        if (this.lifeSpan > 30 && this.lifeSpan < 130 && this.pregnant === false && this.lifespan + this.endOfPregnancy < this.lifeSpan && this.pregnancyChance === 5 && this.sex === 0 && this.hunger < 70) {
+        if (this.lifeSpan > 30 && this.lifeSpan < 130 && this.pregnant === false && this.lifespan + this.endOfPregnancy < this.lifeSpan && this.pregnancyChance === 5 && this.sex === 0/* && this.hunger < 40*/ && this.fishInTank < 25) {
             this._pregnancy();
             console.log(this.chosenName + 'Pregnancy Fired! <-------------------------- ');
         }
@@ -100,9 +101,14 @@ class Guppy extends Phaser.Sprite {
         }
 
     }
+    
+    
+    
 
     _scaleModel() {
-        if (this.modelSize <= 1.0) {
+        if (this.sex === 0 && this.modelSize <= 1.1) {
+            this.modelSize += 0.022;
+        } else if (this.sex === 1 && this.modelSize <= 0.95){
             this.modelSize += 0.022;
         }
     }
@@ -164,9 +170,9 @@ class Guppy extends Phaser.Sprite {
 
     _initModel() {
         if (this.sex === 0) {
-            this.model = this.game.add.sprite(0, 0, 'maleGuppy');
-        } else {
             this.model = this.game.add.sprite(0, 0, 'femaleGuppy');
+        } else {
+            this.model = this.game.add.sprite(0, 0, 'maleGuppy');
         }
         this.addChild(this.model);
         this.model.anchor.setTo(0.5);

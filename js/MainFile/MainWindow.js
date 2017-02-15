@@ -25,7 +25,7 @@ class MainWindow extends Phaser.State {
     _fishEatEvent(fish, foodChip) {
         if (fish.hasEaten === false) {
             foodChip.kill();
-            fish.hunger += 10;
+            fish.hunger += 40;
             fish.hasEaten = true;
             this.game.time.events.add(Phaser.Timer.SECOND * 7, function () {
                 fish.hasEaten = false;
@@ -50,19 +50,47 @@ class MainWindow extends Phaser.State {
 
 
     }
-    
-    _checkForMales() {
-            this.fishGroup.forEachAlive(function (fish) {
+    _checkMaxFish() {
+        this.fishGroup.forEachAlive(function (fish) {
             fish.foodPosition = this.foodPosition;
         }, this);
     }
+
+    _checkforMales() {
+
+        console.log('checkformalesfired');
+        this.fishGroup.forEachAlive(function (fish) {
+            var males = [];
+            if (fish.sex === 1) {
+                males.push('X');
+            }
+            if (fish.sex === 0) {
+                fish.fishInTank = [];
+                fish.fishInTank.push(males);
+                console.log(fish.fishInTank.length);
+            }
+        }, this);
+    }
+
+
+
+
+    _checkCapacity() {
+        this._capacity = this.fishGroup.length;
+        this.fishGroup.forEachAlive(function (fish) {
+            fish.fishInTank = 0;
+            fish.fishInTank = this._capacity;
+        }, this);
+    }
     _fishBirthing(locationX, locationY) {
-        var randomPregnancyRate = Math.random() * (3 - 1) + 1;
+        var randomPregnancyRate = Math.random() * (5 - 3) + 5;
         randomPregnancyRate = Math.floor(randomPregnancyRate);
         for (this.i = 0; this.i < randomPregnancyRate; this.i++) {
             this._addFish(locationX, locationY);
+            console.log('maximum fishbirth!!!');
         }
         this.testSignal = this.fish.events.fishBirth.add(this._fishBirthing, this, 0, this.locationX, this.locationY);
+        this._checkCapacity();
     }
 
     _initBubbles() {
@@ -98,7 +126,8 @@ class MainWindow extends Phaser.State {
     _spawnMeal() {
         if (this.game.time.now > this.foodSpawnTimer) {
             this.foodSpawnTimer = this.game.time.now + this.foodCounter;
-            for (this.i = 0; this.i < 10; this.i++) {
+            this._checkCapacity();
+            for (this.i = 0; this.i < 30; this.i++) {
                 var foodRange = Math.random() * (60 + this.game.input.mousePointer.x - this.game.input.mousePointer.x - 10) + this.game.input.mousePointer.x - 10;
                 var foodY = Math.random() * (-50 - 15) - 15;
                 this.foodChip = this.game.add.sprite(foodRange, foodY, 'foodChip');
