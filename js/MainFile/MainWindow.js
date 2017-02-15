@@ -85,7 +85,7 @@ class MainWindow extends Phaser.State {
     }
     _fishBirthing(locationX, locationY) {
         console.log('fishbirthing fired!!!');
-        var randomPregnancyRate = Math.random() * (5 - 3) + 5;
+        var randomPregnancyRate = Math.random() * (4 - 1) + 1;
         randomPregnancyRate = Math.floor(randomPregnancyRate);
         for (this.i = 0; this.i < randomPregnancyRate; this.i++) {
             this._addFish(locationX, locationY);

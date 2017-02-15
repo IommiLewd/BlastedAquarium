@@ -72,7 +72,7 @@ class Guppy extends Phaser.Sprite {
     }
 
     _lifeCycle() {
-        this.pregnancyChance = Math.random() * (7 - 1) + 1;
+        this.pregnancyChance = Math.random() * (25 - 1) + 1;
         this.pregnancyChance = Math.floor(this.pregnancyChance);
         if (this.lifeSpan > 30 && this.lifeSpan < 130 && this.pregnant === false && this.lifespan + this.endOfPregnancy < this.lifeSpan && this.pregnancyChance === 5 && this.sex === 0/* && this.hunger < 40*/ && this.fishInTank < 25) {
             this._pregnancy();

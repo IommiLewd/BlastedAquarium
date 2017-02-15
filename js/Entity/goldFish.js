@@ -71,7 +71,7 @@ class goldFish extends Phaser.Sprite {
     }
 
     _lifeCycle() {
-        this.pregnancyChance = Math.random() * (15 - 1) + 1;
+        this.pregnancyChance = Math.random() * (45 - 1) + 1;
         this.pregnancyChance = Math.floor(this.pregnancyChance);
         if (this.lifeSpan > 50 && this.lifeSpan < 150 && this.pregnant === false && this.lifespan + this.endOfPregnancy < this.lifeSpan && this.pregnancyChance === 5 && this.sex === 0 && this.hunger < 70) {
             this._pregnancy();
