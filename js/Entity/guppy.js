@@ -26,7 +26,7 @@ class Guppy extends Phaser.Sprite {
         this._initInfoBox();
 
         this._randomMovement();
-        this.gameMinute = 1;
+        this.gameMinute = 20;
         
         this.lifeSpan = 0;
         this.pregnant = false;
@@ -59,47 +59,28 @@ class Guppy extends Phaser.Sprite {
         this._lifeCycle();
         this._updateFishInfo();
         console.log(this.chosenName + ' has grown a timeUnit. Current Lifespan is: ' + this.lifeSpan + ' pregnant is = ' + this.pregnant);
-  
         if(this.lifeSpan < 350){
          this.lifeCounter = this.game.time.events.add(Phaser.Timer.SECOND * this.gameMinute, this._lifeTimer, this);   
         }
-        
-        //this.lifeCounter = this.game.time.events.add(Phaser.Timer.SECOND * this.gameMinute, this._lifeTimer, this);
-        
-        
-        
-        
     }
 
     _lifeCycle() {
-        this.pregnancyChance = Math.random() * (25 - 1) + 1;
+        this.pregnancyChance = Math.random() * (10 - 1) + 1;
         this.pregnancyChance = Math.floor(this.pregnancyChance);
-        if (this.lifeSpan > 30 && this.lifeSpan < 130 && this.pregnant === false && this.lifespan + this.endOfPregnancy < this.lifeSpan && this.pregnancyChance === 5 && this.sex === 0/* && this.hunger < 40*/ && this.fishInTank < 25) {
+        if (this.lifeSpan > 30 && this.lifeSpan < 140 && this.pregnant === false && this.lifespan + this.endOfPregnancy < this.lifeSpan && this.pregnancyChance === 5 && this.sex === 0/* && this.hunger < 40*/ && this.fishInTank < 25) {
             this._pregnancy();
             console.log(this.chosenName + 'Pregnancy Fired! <-------------------------- ');
         }
-
         if (this.lifeSpan > this.birthDate && this.pregnant === true) {
             this._birth();
-            console.log(this.chosenName + 's Birth Fired!');
+            console.log(this.chosenName + ' is now pregnant!');
             this.pregnant = false;
         }
-
-        if (this.lifeSpan === this.endOfPregnancy) {
-            console.log(this.chosenName + 'EndOvPregnancy');
-        }
-
         var deathChance = Math.random() * (99 - 1) + 1;
         if (this.lifeSpan - 170 > deathChance || this.hunger <= 0) {
-          //  this.game.time.events.remove(this.lifeCounter);
-            console.log('deathevent fired');
-           //this.game.time.events.remove(this.lifeCounter);
-            //this.lifeCounter.stop(false);
-         
+            console.log(this.chosenName + ' Has died!');
             this.kill();
-
         }
-
     }
     
     
@@ -119,10 +100,9 @@ class Guppy extends Phaser.Sprite {
         this.events.fishBirth.dispatch(this.locationX, this.locationY);
     }
     _pregnancy() {
-
         this.pregnant = true;
-        this.birthDate = this.lifeSpan + 10;
-        this.endOfPregnancy = this.lifeSpan + 20;
+        this.birthDate = this.lifeSpan + 20;
+        this.endOfPregnancy = this.lifeSpan + 30;
 
     }
 
@@ -268,7 +248,6 @@ class Guppy extends Phaser.Sprite {
             } else {
                 this._randomMovement();
             }
-
         }, this);
         var bubbleChance = Math.random() * (5 - 1) + 1;
         bubbleChance = Math.floor(bubbleChance);

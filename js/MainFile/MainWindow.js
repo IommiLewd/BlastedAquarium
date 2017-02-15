@@ -22,6 +22,12 @@ class MainWindow extends Phaser.State {
         this.background = this.add.image(0, 0, 'backgroundImage');
     }
 
+    
+    _autoFeed(){
+         this._spawnMeal(1);
+             console.log('autoFeed fird, groupLength is: ' + this.fishGroup.length);
+         this.game.time.events.add(Phaser.Timer.SECOND * 60, this._autoFeed, this);
+    }
     _fishEatEvent(fish, foodChip) {
         if (fish.hasEaten === false) {
             foodChip.kill();
@@ -30,7 +36,7 @@ class MainWindow extends Phaser.State {
             this.game.time.events.add(Phaser.Timer.SECOND * 7, function () {
                 fish.hasEaten = false;
             }, this);
-        } else {}
+        }
         fish._updateFishInfo();
         this._foodHandler();
         this._checkCapacity();
@@ -59,7 +65,7 @@ class MainWindow extends Phaser.State {
 
     _checkforMales() {
 
-        console.log('checkformalesfired');
+   
         this.fishGroup.forEachAlive(function (fish) {
             var males = [];
             if (fish.sex === 1) {
@@ -125,12 +131,17 @@ class MainWindow extends Phaser.State {
         }, this);
 
     }
-    _spawnMeal() {
+    _spawnMeal(type) {
         if (this.game.time.now > this.foodSpawnTimer) {
             this.foodSpawnTimer = this.game.time.now + this.foodCounter;
 
-            for (this.i = 0; this.i < 30; this.i++) {
-                var foodRange = Math.random() * (60 + this.game.input.mousePointer.x - this.game.input.mousePointer.x - 10) + this.game.input.mousePointer.x - 10;
+            for (this.i = 0; this.i < 10; this.i++) {
+                if(type === 0){
+                     var foodRange = Math.random() * (60 + this.game.input.mousePointer.x - this.game.input.mousePointer.x - 10) + this.game.input.mousePointer.x - 10;
+                } else if (type === 1){
+                    var foodRange = Math.random() * (120 + 500 - 540 - 0) + 540 - 0;
+                }
+               
                 var foodY = Math.random() * (-50 - 15) - 15;
                 this.foodChip = this.game.add.sprite(foodRange, foodY, 'foodChip');
                 this.game.physics.arcade.enable(this.foodChip);
@@ -166,14 +177,14 @@ class MainWindow extends Phaser.State {
         this.stage.disableVisibilityChange = true;
 
         this.foodPosition = [];
-
+        this._autoFeed();
         this.testSignal = this.fish.events.fishBirth.add(this._fishBirthing, this, 0, this.locationX, this.locationY);
     }
 
 
     update() {
         if (this.game.input.activePointer.rightButton.isDown && this.game.input.mousePointer.x < 700 && this.game.input.mousePointer.x > 260) {
-            this._spawnMeal();
+            this._spawnMeal(0);
         }
         this._collisionHandler();
 
