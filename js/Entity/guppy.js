@@ -26,7 +26,7 @@ class Guppy extends Phaser.Sprite {
         this._initInfoBox();
 
         this._randomMovement();
-        this.gameMinute = 5;
+        this.gameMinute = 1;
         
         this.lifeSpan = 0;
         this.pregnant = false;

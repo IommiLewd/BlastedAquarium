@@ -33,6 +33,7 @@ class MainWindow extends Phaser.State {
         } else {}
         fish._updateFishInfo();
         this._foodHandler();
+        this._checkCapacity();
     }
     _addFish(x, y, type) {
         this.spawnX = x;
@@ -47,7 +48,7 @@ class MainWindow extends Phaser.State {
         }
         this.fish = new Guppy(this.game, this.spawnX, this.spawnY, type);
         this.fishGroup.add(this.fish);
-
+        this.testSignal = this.fish.events.fishBirth.add(this._fishBirthing, this, 0, this.locationX, this.locationY);
 
     }
     _checkMaxFish() {
@@ -83,6 +84,7 @@ class MainWindow extends Phaser.State {
         }, this);
     }
     _fishBirthing(locationX, locationY) {
+        console.log('fishbirthing fired!!!');
         var randomPregnancyRate = Math.random() * (5 - 3) + 5;
         randomPregnancyRate = Math.floor(randomPregnancyRate);
         for (this.i = 0; this.i < randomPregnancyRate; this.i++) {
@@ -126,7 +128,7 @@ class MainWindow extends Phaser.State {
     _spawnMeal() {
         if (this.game.time.now > this.foodSpawnTimer) {
             this.foodSpawnTimer = this.game.time.now + this.foodCounter;
-            this._checkCapacity();
+
             for (this.i = 0; this.i < 30; this.i++) {
                 var foodRange = Math.random() * (60 + this.game.input.mousePointer.x - this.game.input.mousePointer.x - 10) + this.game.input.mousePointer.x - 10;
                 var foodY = Math.random() * (-50 - 15) - 15;
