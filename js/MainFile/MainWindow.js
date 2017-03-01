@@ -11,25 +11,19 @@ class MainWindow extends Phaser.State {
     constructor() {
         super();
     }
-
     preload() {}
-
     _collisionHandler() {
         this.game.physics.arcade.collide(this.barrier, this.foodGroup);
         this.game.physics.arcade.overlap(this.fishGroup, this.foodGroup, this._fishEatEvent, null, this);
     }
-
     _initStage() {
         this.background = this.add.image(0, 0, 'backgroundImage');
     }
-
     _autoFeed() {
         this._spawnMeal(1);
-        
-        this.game.time.events.add(Phaser.Timer.SECOND * 60, this._autoFeed, this);
+        this.game.time.events.add(Phaser.Timer.SECOND * 80, this._autoFeed, this);
         this._checkCapacity();
     }
-
     _fishEatEvent(fish, foodChip) {
         if (fish.hasEaten === false) {
             foodChip.kill();
@@ -41,9 +35,7 @@ class MainWindow extends Phaser.State {
         }
         fish._updateFishInfo();
         this._foodHandler();
-
     }
-
     _addFish(x, y, type) {
         this.spawnX = x;
         this.spawnY = y;
@@ -57,9 +49,9 @@ class MainWindow extends Phaser.State {
         }
         this.fish = new Guppy(this.game, this.spawnX, this.spawnY, type);
         this.fishGroup.add(this.fish);
+        this.goldSignal = this.fish.events.addGold.add(this._addCredits, this, 0, this.fishCurrentValue);
         this.testSignal = this.fish.events.fishBirth.add(this._fishBirthing, this, 0, this.locationX, this.locationY);
     }
-
     _checkforMales() {
         this.fishGroup.forEachAlive(function (fish) {
             var males = [];
@@ -73,7 +65,6 @@ class MainWindow extends Phaser.State {
             }
         }, this);
     }
-
     _checkCapacity() {
         console.log('Capacity Check fired, groupLength is: ' + this.fishGroup.length);
         this._capacity = this.fishGroup.length;
@@ -111,7 +102,6 @@ class MainWindow extends Phaser.State {
         this.bubbleEmitter.x = 132;
         this.bubbleEmitter.y = 260;
     }
-
     _foodHandler() {
         this.foodPosition = [];
         this.foodGroup.forEachAlive(function (foodChip) {
@@ -121,7 +111,12 @@ class MainWindow extends Phaser.State {
             fish.foodPosition = this.foodPosition;
         }, this);
     }
-
+    _addCredits(fishCurrentValue){
+        console.log('addcreditsfired');
+        this.currentlyHeldGold += fishCurrentValue;
+        this.creditsText.setText(this.currentlyHeldGold);
+        this.goldSignal = this.fish.events.addGold.add(this._addCredits, this, 0, fishCurrentValue);
+    }
     _spawnMeal(type) {
         if (this.game.time.now > this.foodSpawnTimer) {
             this.foodSpawnTimer = this.game.time.now + this.foodCounter;
@@ -140,7 +135,6 @@ class MainWindow extends Phaser.State {
             this._foodHandler();
         }
     }
-
     _initBarrier() {
         this.barrier = this.game.add.tileSprite(0, 500, 960, 40, 'yellowpx');
         this.game.physics.arcade.enable(this.barrier);
@@ -148,8 +142,19 @@ class MainWindow extends Phaser.State {
         this.barrier.body.immovable = true;
         this.barrier.allowGravity = 0;
     }
-
+    _initMoneyBar(){
+        this.moneyBar = this.game.add.sprite(0,0, 'moneyBar');
+                     this.goldHeaderStyle = {
+            font: "14px Press Start 2P",
+            align: "right",
+            fill: "#d4ae53",
+            boundsAlignH: "right"
+        };
+   this.creditsText = this.game.add.text(58, 26, this.currentlyHeldGold, this.goldHeaderStyle);
+        this.creditsText.anchor.setTo(0.5, 1.0);
+    }
     create() {
+        this.currentlyHeldGold = 50;
         this.game.canvas.oncontextmenu = function (e) {
             e.preventDefault();
         }
@@ -162,15 +167,16 @@ class MainWindow extends Phaser.State {
         this.fishGroup = this.add.group();
         this.foodGroup = this.add.group();
         this._addFish(undefined, undefined, 1);
+        this._addFish(undefined, undefined, 1);
         this._addFish(undefined, undefined, 0);
         this._addFish(undefined, undefined, 0);
         this.stage.disableVisibilityChange = true;
         this.foodPosition = [];
         this._autoFeed();
+        this._initMoneyBar();
         this.testSignal = this.fish.events.fishBirth.add(this._fishBirthing, this, 0, this.locationX, this.locationY);
+        
     }
-
-
     update() {
         if (this.game.input.activePointer.rightButton.isDown && this.game.input.mousePointer.x < 700 && this.game.input.mousePointer.x > 260) {
             this._spawnMeal(0);
